@@ -1,13 +1,13 @@
 const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } = require('discord.js');
 const { QuickDB } = require('quick.db');
 
-// Inicializar la base de datos
-const db = new QuickDB();
+// Inicializar la base de datos en la carpeta persisente del volumen (/app/data)
+const db = new QuickDB({ filePath: '/app/data/json.sqlite' });
 
 const TOKEN = process.env.TOKEN;
 const CLIENT_ID = '1538778042401554463';
 
-// Definición de comandos Slash
+// Definición de Comandos Slash
 const commands = [
     new SlashCommandBuilder()
         .setName('puntos')
@@ -32,30 +32,32 @@ const commands = [
         )
 ].map(command => command.toJSON());
 
-// Registrar comandos en Discord
+// Registro de comandos en la API de Discord
 const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 (async () => {
     try {
+        console.log('Cargando comandos Slash en Discord...');
         await rest.put(
             Routes.applicationCommands(CLIENT_ID),
             { body: commands }
         );
-        console.log('Comandos de puntos registrados con éxito.');
+        console.log('¡Comandos Slash registrados con éxito!');
     } catch (error) {
         console.error('Error al registrar comandos:', error);
     }
 })();
 
+// Inicializar el cliente del bot
 const client = new Client({
     intents: [GatewayIntentBits.Guilds]
 });
 
 client.once('ready', () => {
-    console.log(`Bot conectado como: ${client.user.tag}`);
+    console.log(`Bot conectado exitosamente como: ${client.user.tag}`);
 });
 
-// Manejo de comandos Slash
+// Manejo de Comandos Slash
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
@@ -64,8 +66,6 @@ client.on('interactionCreate', async (interaction) => {
     // Comando: /puntos
     if (commandName === 'puntos') {
         const usuario = interaction.options.getUser('usuario') || interaction.user;
-        
-        // Obtener puntos de la base de datos (por defecto 0)
         const puntosActuales = await db.get(`puntos_${usuario.id}`) || 0;
 
         await interaction.reply(`🪙 **${usuario.username}** tiene **${puntosActuales}** puntos.`);
@@ -76,7 +76,6 @@ client.on('interactionCreate', async (interaction) => {
         const usuario = interaction.options.getUser('usuario');
         const cantidad = interaction.options.getInteger('cantidad');
 
-        // Sumar puntos al registro del usuario en la base de datos
         const nuevosPuntos = await db.add(`puntos_${usuario.id}`, cantidad);
 
         await interaction.reply(`✅ Le has otorgado **${cantidad}** puntos a **${usuario.username}**. Ahora tiene **${nuevosPuntos}** puntos.`);
