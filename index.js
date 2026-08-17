@@ -1,7 +1,7 @@
 const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } = require('discord.js');
 
 // Configuración de credenciales
-const TOKEN = 'TU_TOKEN_AQUI'; // Pega tu Token entre las comillas
+const TOKEN = 'process.env.TOKEN;'; // Pega tu Token entre las comillas
 const CLIENT_ID = '1538778042401554463';
 
 // Definición de comandos Slash
