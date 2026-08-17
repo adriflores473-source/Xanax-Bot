@@ -1,18 +1,13 @@
 {
   "name": "xanax-bot",
   "version": "1.0.0",
-  "description": "Bot oficial para POSTGANG",
+  "description": "Bot de Discord",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "@napi-rs/canvas": "^0.1.100",
-    "croxydb": "^0.0.27",
-    "discord.js": "^14.27.0"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+    "@napi-rs/canvas": "^0.1.65",
+    "discord.js": "^14.18.0"
+  }
 }
